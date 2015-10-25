@@ -3,6 +3,10 @@
 # Standard Un*x authentication.
 @include common-auth
 
+# Google Authenticator enforcement policy
+auth    [success=1 default=ignore]      pam_access.so   accessfile=/etc/security/access-gauth.conf
+auth    required                        pam_google_authenticator.so
+
 # Disallow non-root logins when /etc/nologin exists.
 account    required     pam_nologin.so
 
@@ -53,4 +57,3 @@ session [success=ok ignore=ignore module_unknown=ignore default=bad]        pam_
 
 # Standard Un*x password updating.
 @include common-password
-
