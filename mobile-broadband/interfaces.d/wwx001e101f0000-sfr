@@ -1,0 +1,5 @@
+auto wwx001e101f0000
+allow-hotplug wwx001e101f0000
+iface wwx001e101f0000 inet dhcp
+     pre-up /bin/echo -ne 'AT^NDISDUP=1,1,"websfr"\r\n' > /dev/ttyUSB0
+     post-down /bin/echo -ne 'AT^NDISDUP=1,0\r\n' > /dev/ttyUSB0
