@@ -17,10 +17,10 @@ AT+CPIN=1234\r\n
 ```
 
 Setting up the modem behaviour.
-ATQ0 => Modem is not quiet
-ATV1 => Modem is verbal (replies with word messages) 
-ATE1 => Local echo enabled
-ATS0 => Disable auto-answer (=0)
+ * ATQ0 => Modem is not quiet
+ * ATV1 => Modem is verbal (replies with word messages) 
+ * ATE1 => Local echo enabled
+ * ATS0 => Disable auto-answer (=0)
 
 ```
 ATQ0 V1 E1 S0=0
