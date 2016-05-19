@@ -31,6 +31,7 @@ alias m='mutt -y'
 alias md='mkdir'
 alias rd='rmdir'
 alias upgrade='apt-get update && apt-get upgrade && apt-get clean'
+alias 49-3='sudo'
 
 # De la couleur pour grep
 alias grep='grep --color=auto'
