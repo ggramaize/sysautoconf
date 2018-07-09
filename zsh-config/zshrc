@@ -61,12 +61,20 @@ bindkey '[2~' overwrite-mode          # Insert
 bindkey '[5~' history-search-backward # PgUp
 bindkey '[6~' history-search-forward  # PgDn
 
+# Prompt racine en RW, ou en RO.
+mount | grep " on / " | grep "rw" &> /dev/null
+if [ "$?" -eq 0 ]; then
+  ROOT_RORW_SUFFIX="%{[0m%}(%{[32m%}rw%{[0m%})"
+else
+  ROOT_RORW_SUFFIX="%{[0m%}(%{[31m%}ro%{[0m%})"
+fi
+#
 # Prompt couleur (la couleur n'est pas la même pour le root et
 # pour les simples utilisateurs)
 if [ "`id -u`" -eq 0 ]; then
-  export PS1="%{[36;1m%}%T %{[34m%}%n%{[33m%}@%{[37m%}%m %{[32m%}%~ %{[33m%}%#%{[0m%} "
+  export PS1="%{[36;1m%}%T %{[34m%}%n%{[33m%}@%{[37m%}%m %{[32m%}%~ $ROOT_RORW_SUFFIX %{[33m%}%#%{[0m%} "
 else
-  export PS1="%{[36;1m%}%T %{[31m%}%n%{[33m%}@%{[37m%}%m %{[32m%}%~ %{[33m%}%#%{[0m%} "
+  export PS1="%{[36;1m%}%T %{[31m%}%n%{[33m%}@%{[37m%}%m %{[32m%}%~ $ROOT_RORW_SUFFIX %{[33m%}%#%{[0m%} "
 fi
 
 # Prise en charge des touches [début], [fin] et autres
