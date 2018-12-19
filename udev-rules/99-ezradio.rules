@@ -1,0 +1,1 @@
+ACTION=="add", ATTRS{idVendor}=="11ca", ATTRS{idProduct}=="0212", RUN+="/sbin/modprobe cp210x" RUN+="/bin/sh -c 'echo 11ca 0212 > /sys/bus/usb-serial/drivers/cp210x/new_id'"
