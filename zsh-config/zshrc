@@ -8,9 +8,13 @@
 # 1. Les alias #
 ################
 
-# Gestion du 'ls' : couleur & ne touche pas aux accents
-alias ls='ls --classify --tabsize=0 --literal --color=auto --show-control-chars --human-readable'
-
+if [[ "$PROTOCOL" != "AX.25" ]]; then
+  # Gestion du 'ls' : couleur & ne touche pas aux accents
+  alias ls='ls --classify --tabsize=0 --literal --color=auto --show-control-chars --human-readable'
+else
+  # Pas de couleur sur un terminal AX.25
+  alias ls='ls --classify --tabsize=0 --literal --show-control-chars --human-readable'
+fi
 # Demande confirmation avant d'écraser un fichier
 alias cp='cp --interactive'
 alias mv='mv --interactive'
@@ -31,10 +35,11 @@ alias m='mutt -y'
 alias md='mkdir'
 alias rd='rmdir'
 alias upgrade='apt-get update && apt-get upgrade && apt-get clean'
-alias 49-3='sudo'
 
-# De la couleur pour grep
-alias grep='grep --color=auto'
+if [[ "$PROTOCOL" != "AX.25" ]]; then
+  # De la couleur pour grep
+  alias grep='grep --color=auto'
+fi
 
 #######################################
 # 2. Prompt et définition des touches #
@@ -61,20 +66,18 @@ bindkey '[2~' overwrite-mode          # Insert
 bindkey '[5~' history-search-backward # PgUp
 bindkey '[6~' history-search-forward  # PgDn
 
-# Prompt racine en RW, ou en RO.
-mount | grep " on / " | grep "rw" &> /dev/null
-if [ "$?" -eq 0 ]; then
-  ROOT_RORW_SUFFIX="%{[0m%}(%{[32m%}rw%{[0m%})"
-else
-  ROOT_RORW_SUFFIX="%{[0m%}(%{[31m%}ro%{[0m%})"
-fi
-#
 # Prompt couleur (la couleur n'est pas la même pour le root et
 # pour les simples utilisateurs)
 if [ "`id -u`" -eq 0 ]; then
-  export PS1="%{[36;1m%}%T %{[34m%}%n%{[33m%}@%{[37m%}%m %{[32m%}%~ $ROOT_RORW_SUFFIX %{[33m%}%#%{[0m%} "
+  export PS1="%{[36;1m%}%T %{[34m%}%n%{[33m%}@%{[37m%}%m %{[32m%}%~ %{[33m%}%#%{[0m%} "
 else
-  export PS1="%{[36;1m%}%T %{[31m%}%n%{[33m%}@%{[37m%}%m %{[32m%}%~ $ROOT_RORW_SUFFIX %{[33m%}%#%{[0m%} "
+  export PS1="%{[36;1m%}%T %{[31m%}%n%{[33m%}@%{[37m%}%m %{[32m%}%~ %{[33m%}%#%{[0m%} "
+fi
+
+# Pas de couleur si session ouverte depuis une connexion AX.25
+if [[ "$PROTOCOL" == "AX.25" ]]; then
+  export PS1="%T %n@%m %~ %# "
+  export TERM=vt100
 fi
 
 # Prise en charge des touches [début], [fin] et autres
@@ -109,19 +112,21 @@ case $TERM in
 esac
 
 # Gestion de la couleur pour 'ls' (exportation de LS_COLORS)
-if [ -x /usr/bin/dircolors ]
+if [[ "$PROTOCOL" != "AX.25" ]]
 then
-  if [ -r ~/.dir_colors ]
+  if [ -x /usr/bin/dircolors ]
   then
-    eval "`dircolors ~/.dir_colors`"
-  elif [ -r /etc/dir_colors ]
-  then
-    eval "`dircolors /etc/dir_colors`"
-  else
-    eval "`dircolors`"
+    if [ -r ~/.dir_colors ]
+    then
+      eval "`dircolors ~/.dir_colors`"
+    elif [ -r /etc/dir_colors ]
+    then
+      eval "`dircolors /etc/dir_colors`"
+    else
+      eval "`dircolors`"
+    fi
   fi
 fi
-
 
 ###########################################
 # 3. Options de zsh (cf 'man zshoptions') #
